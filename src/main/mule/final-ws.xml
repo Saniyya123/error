@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="168715fb-75be-48fe-b0c3-89318fc1f5b0" >
+		<db:my-sql-connection host="remotemysql.com" port="3306" user="8t9Uss66rs" password="QzSLzg7Yzq" database="8t9Uss66rs" />
+	</db:config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2e82e396-55e9-442d-b77c-a241a887f1ef" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="final-wsFlow" doc:id="3fa70c56-9c98-41b4-a8db-c5c2ba13f821" >
+		<http:listener doc:name="Listener" doc:id="2c3dd7a4-2baf-483a-a0df-35af5bfe80eb" config-ref="HTTP_Listener_config" path="/final"/>
+		<db:select doc:name="Select" doc:id="02e0fe00-bd8d-4661-8f01-6ecda15847e3" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from employee]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="7c086d6e-48e3-4f6b-bb7d-02e9589e18da" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="709603f0-e2f5-460c-9484-8108c3cbeeef" />
+	</flow>
+</mule>
